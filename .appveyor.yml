@@ -1,0 +1,50 @@
+version: 1.0.{build}
+
+image: Visual Studio 2017
+
+environment:
+  BOOST_ROOT: C:\Libraries\boost_1_69_0
+  build_system: cmake
+  skip_branch_with_pr: true
+
+  matrix:
+    - generator: "Visual Studio 15 2017 Win64"
+      Python_ROOT_DIR: C:\Python37-x64
+
+    - generator: "Visual Studio 15 2017"
+      Python_ROOT_DIR: C:\Python37
+
+pull_requests:
+  do_not_increment_build_number: true
+
+matrix:
+  fast_finish: true
+
+platform:
+  - x64
+
+configuration:
+  - Debug
+  - Release
+
+install:
+  - git submodule update --init --recursive
+  - set PATH=%Python_ROOT_DIR%;%PATH%
+  - set PATH=%cxx_path%;%PATH%
+  - rename "C:\Program Files\Git\usr\bin\sh.exe" "sh-ignored.exe"
+
+before_build:
+  - mkdir build && cd build
+
+build_script:
+  - cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%CONFIGURATION% ../
+  - cmake --build . --config %CONFIGURATION%
+
+after_build:
+  - set BUILD_FOLDER=%APPVEYOR_PROJECT_NAME%-%CONFIGURATION%-%PLATFORM%
+  - cmake --install . --config %CONFIGURATION% --prefix %BUILD_FOLDER%
+  - cmd: 7z a %BUILD_FOLDER%.zip %BUILD_FOLDER%
+  - appveyor PushArtifact %BUILD_FOLDER%.zip
+
+test_script:
+  - ctest -C %CONFIGURATION% --output-on-failure --repeat-until-fail 2 --parallel 4
