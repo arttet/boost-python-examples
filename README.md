@@ -1,7 +1,7 @@
 # boost-python-examples
 
 [![Build Status](https://travis-ci.org/arttet/boost-python-examples.svg?branch=master)](https://travis-ci.org/arttet/boost-python-examples)
-[![Build status](https://ci.appveyor.com/api/projects/status/cp3pxfyciub4f7ix?svg=true)](https://ci.appveyor.com/project/arttet/boost-python-examples)
+[![Build status](https://ci.appveyor.com/api/projects/status/p9kv4kq0obj1x87q?svg=true)](https://ci.appveyor.com/project/arttet/boost-python-examples)
 
 Some examples for the use of boost::python
 
